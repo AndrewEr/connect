@@ -10,6 +10,11 @@
 
 	<?php
 	require_once('connect.php');
+	
+	
+	function showerror() {
+     die("Error " . mysql_errno() . " : " . mysql_error());
+  	}
 	?>
 	
 	<?php
@@ -23,7 +28,44 @@
 		$minStock = $_GET['minStock'];
 		$minOrders = $_GET['minOrders'];
 		
+		if($wineName == 'All')
+			result_wineName ="*";
+			
+		if($wineryName == 'All')
+			result_wineryName ="*";
 		
+		if($regionName == 'All')
+			result_regionName ="*";
+			
+		if($variety == 'All')
+			result_variety ="*";
+			
+		if($startyear == 'All')
+			result_startyear ="*";
+			
+		if($endyear == 'All')
+			result_endyear ="*";
+			
+		if($minStock == 'All')
+			result_minStock="*";
+			
+		if($minOrders == 'All')
+			result_minOrders ="*";
+			
+		$result_query="SELECT wine_id, wine_name, description, year, winery_name
+					FROM winery, region, wine
+					WHERE winery.region_id = region.region_id
+					AND wine.winery_id = winery.winery_id";
+
+  // ... then, if the user has specified a region, add the regionName
+  // as an AND clause ...
+  if (isset($regionName) && $regionName != "All") {
+    $query .= " AND region_name = '{$regionName}'";
+  }
+
+  // ... and then complete the query.
+  $query .= " ORDER BY wine_name";
+		}
 		echo $wineName;
 		echo "<br>";
 		echo $wineryName;

@@ -9,8 +9,10 @@
 <body bgcolor="white">
 
 	<?php
+	echo 'Status:<br>';
 	require_once('connect.php');
 	?>
+	
 	<?php
 	
 	if($_GET['submit'])
@@ -23,21 +25,85 @@
 		$endyear = $_GET['endyear'];
 		$minStock = $_GET['minStock'];
 		$minOrders = $_GET['minOrders'];
+		$minCost = $_GET['minCost'];
+		$maxCost = $_GET['maxCost'];
 		
 		$errorstring = "" ;
 
+		if(!$wineName)
+			$errorstring = $errorstring."Wine Name cannot be empty.<br>";
+		if(!$wineryName)
+			$errorstring = $errorstring."Winery Name cannot be empty.<br>";
+		if(!$regionName)
+			$errorstring = $errorstring."Region Name cannot be empty.<br>";
+		if(!$variety)
+			$errorstring = $errorstring."Grape Variety cannot be empty.<br>";
+		if(!$startyear)
+			$errorstring = $errorstring."Starting Year cannot be empty.<br>";
+		if(!$endyear)
+			$errorstring = $errorstring."Ending Year cannot be empty.<br>";
+			
+		if($endyear < $startyear)
+			$errorstring = $errorstring."Starting Year must be before End year<br>";
+			
+		if(!$minStock)
+		{
+			$errorstring = $errorstring."Minimum Stock cannot be empty.<br>";
+			if(!is_numeric($minStock) && !$minStock == "All")
+			{
+				$errorstring = $errorstring."Minimum Stock must be in number.<br>";
+			}
+			
+		}
+		
+		if(!$minOrders)
+		{
+			$errorstring = $errorstring."Minimum Order cannot be empty.<br>";
+			if(!is_numeric($minOrders) && !$minStock == "All")
+			{
+				$errorstring = $errorstring."Minimum Orders must be in number.<br>";
+			}
+			
+		}
+		
+		if(!$minCost)
+		{
+			$errorstring = $errorstring."Minimum Cost cannot be empty.<br>";
+			if(!is_numeric($minCost) && !$minStock == "All")
+			{
+				$errorstring = $errorstring."Minimum Cost must be in number.<br>";
+				if($maxCost < $minCost)
+				{
+					$errorstring = $errorstring."Maximum Cost cannot be smaller than Minimum Cost.<br>";
+				}
+			}
+		}
+		
+		if(!$maxCost)
+		{
+			$errorstring = $errorstring."Maximum Cost cannot be empty.<br>";
+			if(!is_numeric($maxCost) && !$minStock == "All")
+			{
+				$errorstring = $errorstring."Maximum Cost must be in number.<br>";
+				if($maxCost < $minCost)
+				{
+					$errorstring = $errorstring."Maximum Cost cannot be smaller than Minimum Cost.<br>";
+				}
+			}
+			
+		}
 		
 		if($errorstring != "")
-			echo "Error. Please take note of the following :<br> $errorstring";
-
+			echo "<center><br><br>Error. Please take note of the following :<br> $errorstring";
+			
 		if($errorstring == "")
-			header('location: result.php');
+			header('location:result.php');
 	}
 	?>
+
+	<form method="get">
 	
-	<form method="get" action="result.php">
-	
-	<table border ="1">
+	<table border ="1" align = "center">
   	<tr>
 		<td>
 			Wine Name:
@@ -149,7 +215,20 @@
 	</tr>
 	<tr>
 		<td>
+			Range Costs:
+		</td>
+		<td>
+				Minimum:
+				<input type="text" name ="minCost" value="All">
+				Maximum:
+				<input type="text" name ="maxCost" value="All">
+		</td>
+	</tr>
+	<tr>
+		<td colspan ="2">
+		<center>
 		<input type='submit' name = 'submit' value ='SEARCH' />
+		</center>
 		</td>	
     
   </form>
