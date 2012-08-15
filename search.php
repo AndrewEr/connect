@@ -11,10 +11,33 @@
 	<?php
 	require_once('connect.php');
 	?>
+	<?php
 	
+	if($_GET['submit'])
+	{
+		$wineName = $_GET['wineName'];
+		$wineryName = $_GET['wineryName'];
+		$regionName = $_GET['regionName'];
+		$variety = $_GET['variety'];
+		$startyear = $_GET['startyear'];
+		$endyear = $_GET['endyear'];
+		$minStock = $_GET['minStock'];
+		$minOrders = $_GET['minOrders'];
+		
+		$errorstring = "" ;
+
+		
+		if($errorstring != "")
+			echo "Error. Please take note of the following :<br> $errorstring";
+
+		if($errorstring == "")
+			header('location: result.php');
+	}
+	?>
 	
-	<form action="query_results.php" method="GET">
-	<table border ="1" action=" " method ="GET">
+	<form method="get" action="result.php">
+	
+	<table border ="1">
   	<tr>
 		<td>
 			Wine Name:
@@ -40,23 +63,17 @@
 		</td>
 		<td>
 			<?php
-
 			$options = '';
 			$filter =  mysql_query("select region_name from region") or die(mysql_error());
-   
-			while(($row = mysql_fetch_array($filter))!=false)
+			
+			while(($row = mysql_fetch_array($filter)) != false)
 			{
 				$options .="<option>" . $row['region_name'] ."</option>";
 			}
-			
-			$regionName="<form id ='regionName' name= 'regionName' method='get'>
-			
-			<select name ='regionName'> ". $options ." </select>
-			</form>";
- 
-			echo "$regionName";
-               
+			$regionName="<select name ='regionName'> ". $options ." </select>";
+			echo "$regionName";  
 			?>
+			
 		</td>
 	</tr>
   
@@ -65,24 +82,22 @@
 			Grape Variety:
 		</td>
 		<td>
-
 			<?php
-				$options = '';
-				$filter =  mysql_query("select variety from grape_variety") or die(mysql_error());
+
+			$options = '';
+			$filter =  mysql_query("select variety from grape_variety") or die(mysql_error());
    
-				while(($row = mysql_fetch_array($filter))!=false)
-				{
-					$options .="<option>" . $row['variety'] . "</option>";
-				}
-    
-				$variety="<form id ='variety' name= 'variety' method='get'>
-				<select name ='variety'> ". $options ." </select>
-				</form>";
- 
-				echo "$variety";
-             ?>
+			while(($row = mysql_fetch_array($filter)) != false)
+			{
+				$options .="<option>" . $row['variety'] ."</option>";
+			}
+			$variety= "<select name ='variety'> ". $options ." </select>";
+			echo "$variety";  
+			?>
+			         
 		</td>
 	</tr>
+	
 	<tr>
 		<td>
 			Range Years:
@@ -93,21 +108,12 @@
 				$options = '';
 				$filter =  mysql_query("select distinct year from wine order by year asc") or die(mysql_error());
    
-				while(($row = mysql_fetch_array($filter))!=false)
+				while(($row = mysql_fetch_array($filter)) != false)
 				{
-					
 					$options .="<option>" . $row['year'] . "</option>";
 				}
-				
-				echo $row['year'];
-				
-				$year="<form id ='year' name= 'year' method='get'>
-				<select name ='year'> ". $options ." </select>
-				</form>";
-				
+				$year="<select name ='startyear'> ". $options ." </select>";
 				echo "$year";
-				
-
 				?>
 				
 				To:
@@ -116,20 +122,11 @@
 				$filter =  mysql_query("select distinct year from wine order by year asc") or die(mysql_error());
    
 				while(($row = mysql_fetch_array($filter))!=false)
-				{
-					
+				{	
 					$options .="<option>" . $row['year'] . "</option>";
 				}
-				
-				echo $row['year'];
-				
-				$year="<form id ='year' name= 'year' method='get'>
-				<select name ='year'> ". $options ." </select>
-				</form>";
-				
+				$year="<select name ='endyear'> ". $options ." </select>";
 				echo "$year";
-				
-
 				?>
 				
 		</td>
