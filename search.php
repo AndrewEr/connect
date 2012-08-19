@@ -49,59 +49,56 @@
 		if(!$minStock)
 		{
 			$errorstring = $errorstring."Minimum Stock cannot be empty.<br>";
-			if(!is_numeric($minStock) && !$minStock == "All")
-			{
+		}
+		else if(!is_numeric($minStock) && !$minStock == "All")
+		{
 				$errorstring = $errorstring."Minimum Stock must be in number.<br>";
-			}
-			
 		}
 		
 		if(!$minOrders)
 		{
-			$errorstring = $errorstring."Minimum Order cannot be empty.<br>";
-			if(!is_numeric($minOrders) && !$minStock == "All")
-			{
-				$errorstring = $errorstring."Minimum Orders must be in number.<br>";
-			}
-			
+			$errorstring = $errorstring."Minimum Order cannot be empty.<br>";			
+		}
+		else if(!is_numeric($minOrders) && !$minStock == "All")
+		{
+			$errorstring = $errorstring."Minimum Orders must be in number.<br>";
 		}
 		
 		if(!$minCost)
 		{
 			$errorstring = $errorstring."Minimum Cost cannot be empty.<br>";
-			if(!is_numeric($minCost) && !$minStock == "All")
-			{
-				$errorstring = $errorstring."Minimum Cost must be in number.<br>";
-				if($maxCost < $minCost)
-				{
-					$errorstring = $errorstring."Maximum Cost cannot be smaller than Minimum Cost.<br>";
-				}
-			}
+		}
+		else if(!is_numeric($minCost) && !$minStock == "All")
+		{
+			$errorstring = $errorstring."Minimum Cost must be in number.<br>";
+		}
+		else if($maxCost < $minCost)
+		{
+			$errorstring = $errorstring."Maximum Cost cannot be smaller than Minimum Cost.<br>";
 		}
 		
 		if(!$maxCost)
 		{
 			$errorstring = $errorstring."Maximum Cost cannot be empty.<br>";
-			if(!is_numeric($maxCost) && !$minStock == "All")
-			{
-				$errorstring = $errorstring."Maximum Cost must be in number.<br>";
-				if($maxCost < $minCost)
-				{
-					$errorstring = $errorstring."Maximum Cost cannot be smaller than Minimum Cost.<br>";
-				}
-			}
-			
+		}
+		else if(!is_numeric($maxCost) && !$minStock == "All")
+		{
+			$errorstring = $errorstring."Maximum Cost must be in number.<br>";
+		}
+		else if($maxCost < $minCost)
+		{
+			$errorstring = $errorstring."Maximum Cost cannot be smaller than Minimum Cost.<br>";
 		}
 		
 		if($errorstring != "")
 			echo "<center><br><br>Error. Please take note of the following :<br> $errorstring";
 			
 		if($errorstring == "")
-			header('location:result.php');
+			header('location:results.php');
 	}
 	?>
 
-	<form method="get">
+	<form method="get" action="results.php">
 	
 	<table border ="1" align = "center">
   	<tr>
@@ -157,7 +154,7 @@
 			{
 				$options .="<option>" . $row['variety'] ."</option>";
 			}
-			$variety= "<select name ='variety'> ". $options ." </select>";
+			$variety= "<select name ='variety'> <option> All </option>". $options ." </select>";
 			echo "$variety";  
 			?>
 			         
@@ -178,7 +175,7 @@
 				{
 					$options .="<option>" . $row['year'] . "</option>";
 				}
-				$year="<select name ='startyear'> ". $options ." </select>";
+				$year="<select name ='startyear'>". $options ." </select>";
 				echo "$year";
 				?>
 				
@@ -191,7 +188,7 @@
 				{	
 					$options .="<option>" . $row['year'] . "</option>";
 				}
-				$year="<select name ='endyear'> ". $options ." </select>";
+				$year="<select name ='endyear'>". $options ." </select>";
 				echo "$year";
 				?>
 				
