@@ -13,92 +13,7 @@
 	require_once('connect.php');
 	?>
 	
-	<?php
-	
-	if($_GET['submit'])
-	{
-		$wineName = $_GET['wineName'];
-		$wineryName = $_GET['wineryName'];
-		$regionName = $_GET['regionName'];
-		$variety = $_GET['variety'];
-		$startyear = $_GET['startyear'];
-		$endyear = $_GET['endyear'];
-		$minStock = $_GET['minStock'];
-		$minOrders = $_GET['minOrders'];
-		$minCost = $_GET['minCost'];
-		$maxCost = $_GET['maxCost'];
-		
-		$errorstring = "" ;
-
-		if(!$wineName)
-			$errorstring = $errorstring."Wine Name cannot be empty.<br>";
-		if(!$wineryName)
-			$errorstring = $errorstring."Winery Name cannot be empty.<br>";
-		if(!$regionName)
-			$errorstring = $errorstring."Region Name cannot be empty.<br>";
-		if(!$variety)
-			$errorstring = $errorstring."Grape Variety cannot be empty.<br>";
-		if(!$startyear)
-			$errorstring = $errorstring."Starting Year cannot be empty.<br>";
-		if(!$endyear)
-			$errorstring = $errorstring."Ending Year cannot be empty.<br>";
-			
-		if($endyear < $startyear)
-			$errorstring = $errorstring."Starting Year must be before End year<br>";
-			
-		if(!$minStock)
-		{
-			$errorstring = $errorstring."Minimum Stock cannot be empty.<br>";
-		}
-		else if(!is_numeric($minStock) && !$minStock == "All")
-		{
-				$errorstring = $errorstring."Minimum Stock must be in number.<br>";
-		}
-		
-		if(!$minOrders)
-		{
-			$errorstring = $errorstring."Minimum Order cannot be empty.<br>";			
-		}
-		else if(!is_numeric($minOrders) && !$minStock == "All")
-		{
-			$errorstring = $errorstring."Minimum Orders must be in number.<br>";
-		}
-		
-		if(!$minCost)
-		{
-			$errorstring = $errorstring."Minimum Cost cannot be empty.<br>";
-		}
-		else if(!is_numeric($minCost) && !$minStock == "All")
-		{
-			$errorstring = $errorstring."Minimum Cost must be in number.<br>";
-		}
-		else if($maxCost < $minCost)
-		{
-			$errorstring = $errorstring."Maximum Cost cannot be smaller than Minimum Cost.<br>";
-		}
-		
-		if(!$maxCost)
-		{
-			$errorstring = $errorstring."Maximum Cost cannot be empty.<br>";
-		}
-		else if(!is_numeric($maxCost) && !$minStock == "All")
-		{
-			$errorstring = $errorstring."Maximum Cost must be in number.<br>";
-		}
-		else if($maxCost < $minCost)
-		{
-			$errorstring = $errorstring."Maximum Cost cannot be smaller than Minimum Cost.<br>";
-		}
-		
-		if($errorstring != "")
-			echo "<center><br><br>Error. Please take note of the following :<br> $errorstring";
-			
-		if($errorstring == "")
-			header('location:results.php');
-	}
-	?>
-
-	<form method="get" action="results.php">
+	<form method="GET" action ="results.php" >
 	
 	<table border ="1" align = "center">
   	<tr>
@@ -106,7 +21,7 @@
 			Wine Name:
 		</td>
 		<td>
-			<input type="text" name ="wineName" value="All">
+			<input type="text" name ="wineName" value='<?php if(!isset($complete)) echo "All"; else if($complete == false) echo $wineName; else echo ""   ?>'>
 		</td>
 	</tr>
 	
@@ -116,7 +31,7 @@
 		</td>
 		
 		<td>
-		<input type = "text" name ="wineryName" value="All">
+		<input type = "text" name ="wineryName" value='<?php if(!isset($complete)) echo "All"; else if($complete == false) echo $wineryName; else echo ""   ?>'>
 		</td>
 	</tr>
 
@@ -199,7 +114,7 @@
 		Minimum Stock:
 		</td>
 		<td>
-		<input type="text" name ="minStock" value="All">
+		<input type="text" name ="minStock" value='<?php if(!isset($complete)) echo "All"; else if($complete == false) echo $minStock; else echo ""   ?>'>
 		</td>
 	</tr>
 	<tr>
@@ -207,7 +122,7 @@
 		Minimum Orders:
 		</td>
 		<td>
-		<input type="text" name ="minOrders" value="All">
+		<input type="text" name ="minOrders" value='<?php if(!isset($complete)) echo "All"; else if($complete == false) echo $minOrders; else echo ""   ?>'>
 		</td>
 	</tr>
 	<tr>
@@ -216,9 +131,9 @@
 		</td>
 		<td>
 				Minimum:
-				<input type="text" name ="minCost" value="All">
+				<input type="text" name ="minCost" value='<?php if(!isset($complete)) echo "All"; else if($complete == false) echo $minCost; else echo ""   ?>'>
 				Maximum:
-				<input type="text" name ="maxCost" value="All">
+				<input type="text" name ="maxCost" value='<?php if(!isset($complete)) echo "All"; else if($complete == false) echo $maxCost; else echo ""   ?>'>
 		</td>
 	</tr>
 	<tr>
@@ -229,6 +144,95 @@
 		</td>	
     
   </form>
+  
+  
+  	<?php
+	
+	if(isset($_GET['submit']))
+	{
+		$wineName = $_GET['wineName'];
+		$wineryName = $_GET['wineryName'];
+		$regionName = $_GET['regionName'];
+		$variety = $_GET['variety'];
+		$startyear = $_GET['startyear'];
+		$endyear = $_GET['endyear'];
+		$minStock = $_GET['minStock'];
+		$minOrders = $_GET['minOrders'];
+		$minCost = $_GET['minCost'];
+		$maxCost = $_GET['maxCost'];
+		
+		$errorstring = "" ;
+
+		if(!$wineName)
+			$errorstring = $errorstring."Wine Name cannot be empty.<br>";
+		if(!$wineryName)
+			$errorstring = $errorstring."Winery Name cannot be empty.<br>";
+		if(!$regionName)
+			$errorstring = $errorstring."Region Name cannot be empty.<br>";
+		if(!$variety)
+			$errorstring = $errorstring."Grape Variety cannot be empty.<br>";
+		if(!$startyear)
+			$errorstring = $errorstring."Starting Year cannot be empty.<br>";
+		if(!$endyear)
+			$errorstring = $errorstring."Ending Year cannot be empty.<br>";
+			
+		if($endyear < $startyear)
+			$errorstring = $errorstring."Starting Year must be before End year<br>";
+			
+		if(!$minStock)
+		{
+			$errorstring = $errorstring."Minimum Stock cannot be empty.<br>";
+		}
+		else if(!is_numeric($minStock) && !$minStock == "All")
+		{
+				$errorstring = $errorstring."Minimum Stock must be in number.<br>";
+		}
+		
+		if(!$minOrders)
+		{
+			$errorstring = $errorstring."Minimum Order cannot be empty.<br>";			
+		}
+		else if(!is_numeric($minOrders) && !$minStock == "All")
+		{
+			$errorstring = $errorstring."Minimum Orders must be in number.<br>";
+		}
+		
+		if(!$minCost)
+		{
+			$errorstring = $errorstring."Minimum Cost cannot be empty.<br>";
+		}
+		else if(!is_numeric($minCost) && !$minStock == "All")
+		{
+			$errorstring = $errorstring."Minimum Cost must be in number.<br>";
+		}
+		else if($maxCost < $minCost)
+		{
+			$errorstring = $errorstring."Maximum Cost cannot be smaller than Minimum Cost.<br>";
+		}
+		
+		if(!$maxCost)
+		{
+			$errorstring = $errorstring."Maximum Cost cannot be empty.<br>";
+		}
+		else if(!is_numeric($maxCost) && !$minStock == "All")
+		{
+			$errorstring = $errorstring."Maximum Cost must be in number.<br>";
+		}
+		else if($maxCost < $minCost)
+		{
+			$errorstring = $errorstring."Maximum Cost cannot be smaller than Minimum Cost.<br>";
+		}
+		
+		
+		if($errorstring != "")
+			echo "<center><br><br>Error. Please take note of the following :<br> $errorstring";
+			$complete = false;
+			
+		if($errorstring == "")
+			header('location:results.php');
+	}
+	?>
+	
 
 </body>
 </html>

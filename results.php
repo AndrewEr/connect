@@ -9,11 +9,17 @@
 <body bgcolor="white">
 
 	<?php
-	require_once('connect.php');
-	?>
+		require_once('db.php');
 	
-	
-	<?php
+	 	if (!($connection = @ mysql_connect(DB_HOST, DB_USER, DB_PW))) 
+	 	{
+    		die("Could not connect");
+  		}
+  		
+  		if (!mysql_select_db(DB_NAME, $connection))
+  		{
+    		showerror();
+ 		}
 
 		$wineName = $_GET['wineName'];
 		$wineryName = $_GET['wineryName'];
@@ -25,25 +31,7 @@
 		$minOrders = $_GET['minOrders'];
 		$minCost = $_GET['minCost'];
 		$maxCost = $_GET['maxCost'];
-		
-		echo "<br>Wine Name:";
-		echo $wineName;
-		echo "<br>Winery Name:";
-		echo $wineryName;
-		echo "<br>Region Name:";
-		echo $regionName;
-		echo "<br>Variety:";
-		echo $variety;
-		echo "<br>Starting Year:";
-		echo $startyear;
-		echo "<br>Ending Year:";
-		echo $endyear;
-		echo "<br>Minimum Stock:";
-		echo $minStock;
-		echo "<br>Minimum Order:";
-		echo $minOrders;
-		echo "<br>";
-			
+				
 		$result_query = "SELECT wine.wine_name AS Wine_Name,grape_variety.variety AS Grape_Variety, 
 						wine.year AS Wine_Year, winery.winery_name AS Winery_Name,
 						region.region_name AS Region_Name, inventory.cost AS Price, 
@@ -57,7 +45,7 @@
 						wine.wine_id = inventory.wine_id AND
 						wine.wine_id = items.wine_id " ;
 		
-		
+	
 		if(isset($wineName) && $wineName != "All")
 		{
 			$result_query .=" AND wine.wine_name = '{$wineName}'";
@@ -74,6 +62,14 @@
 		{
 			$result_query .=" AND grape_variety.variety = '{$variety}'";
 		}
+		if(isset($startyear) && $startyear != "All")
+		{
+			$result_query .=" AND wine.year >= '{$startyear}'";
+		}
+		if(isset($endyear) && $endyear != "All")
+		{
+			$result_query .=" AND wine.year <= '{$endyear}'";
+		}
 		if(isset($minStock) && $minStock != "All")
 		{
 			$result_query .=" AND inventory.on_hand = '{$minStock}'";
@@ -82,11 +78,81 @@
 		{
 			$result_query .=" AND items.qty = '{$minOrders}'";
 		}
+		if(isset($minCost) && $minCost != "All")
+		{
+			$result_query .=" AND inventory.cost >= '{$minCost}'";
+		}
+		if(isset($maxCost) && $maxCost != "All")
+		{
+			$result_query .=" AND inventory.cost <= '{$maxCost}'";
+		}	
 					
-					
-	 	$result_query .= " ORDER BY wine_name;";
-		
+	 	$result_query .= " ORDER BY wine_name, variety;";
+	 	
+	 	//Query Ends
+	 	
+	 	$result = mysql_query($result_query);
+
+    	$rowsFound = @ mysql_num_rows($result);
+    	
+    	// Print one row of results
+        //. The wine name, grape varieties, year, winery, and region. 
+        //2. The cost of the wine in the inventory.
+		//3. The total number of bottles available at any price.
+		//4. The total stock sold of the wine.
+		//5. The total sales revenue for the wine.
+    	
+		if ($rowsFound > 0) 
+    	{     
+      		echo "Wines from $regionName<br><br>";
+      		echo "{$rowsFound} records found matching your criteria<br>";
+
+		 		echo 
+	      		"\n<table border ='1'>\n<tr>" .
+	           	"\n\t<th>Wine Name</th>" .
+   	       		"\n\t<th>Grape Variety</th>" .
+    	      	"\n\t<th>Wine Year</th>" .
+        	  	"\n\t<th>Region Name</th>" .
+   	       		"\n\t<th>Wine Price</th>" .
+    	      	"\n\t<th>Number of wine in stock</th>" .
+        	  	"\n\t<th>Number of wine sold</th>" .
+          		"\n\t<th>Revenue</th>\n</tr>";
+      
+      		
+     		while ($row = @ mysql_fetch_array($result)) 
+      		{
+       	 		echo 
+       	 		"\n<tr>\n\t<td>{$row["wine_name"]}</td>" .
+            	"\n\t<td>{$row["variety"]}</td>" .
+            	"\n\t<td>{$row["year"]}</td>" .
+            	"\n\t<td>{$row["region.region_name"]}</td>" .
+            	"\n\t<td>{$row["inventory.cost"]}</td>" .
+           	 	"\n\t<td>{$row["inventory.on_hand"]}</td>" .
+           	 	"\n\t<td>{$row["items.qty"]}</td>" .
+           	 	"\n\t<td>{$row["(inventory.cost * inventory.on_hand)"]}</td>\n</tr>";	
+      		} 
+      		
+      		// while($row = mysql_fetch_array($result))
+// 			{
+// 				echo "<tr>";
+// 				
+// 				foreach ($row as $attribute)
+// 				{
+// 					echo "<td>$attribute</td>";
+// 				}
+// 				echo "</tr>"; 
+//			}
+
+			echo "\n</table>";
+       		
 	
+ 		}
+   	 
+    	else
+    	{
+    	 	echo "Your search produced ".$rowsFound." results. Please go back and refine your search";
+    	} 
+
 	?>
 
 </body>
